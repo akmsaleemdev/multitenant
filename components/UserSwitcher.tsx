@@ -34,8 +34,8 @@ export function UserSwitcher({ currentUserId }: { currentUserId: string }) {
           onClick={() => switchUser(opt.id)}
           className={`rounded-md px-3 py-1.5 text-sm ${
             opt.id === currentUserId
-              ? 'bg-zinc-900 text-white'
-              : 'border border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+              ? 'bg-[var(--primary)] text-[var(--text)]'
+              : 'border border-[var(--border)] text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--text)]'
           }`}
         >
           {opt.label}

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { isDatabaseConfigured } from '@/lib/db';
+import { isDatabaseConfigured } from '@/lib/database';
 import { apiError, apiServerError, apiSuccess } from '@/lib/api-utils';
 import { logger } from '@/lib/logger';
 import { getPropertiesInsecure } from '@/lib/queries/properties';

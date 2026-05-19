@@ -1,5 +1,5 @@
 import { getSession } from '@/lib/auth';
-import { isDatabaseConfigured } from '@/lib/db';
+import { isDatabaseConfigured } from '@/lib/database';
 import { apiError, apiServerError, apiSuccess } from '@/lib/api-utils';
 import { logger } from '@/lib/logger';
 import { getPropertiesWithRls } from '@/lib/queries/properties';

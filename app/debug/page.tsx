@@ -17,8 +17,8 @@ export default async function DebugPage() {
         userRole={session.role}
       />
       <main className="mx-auto max-w-6xl flex-1 px-4 py-8">
-        <h1 className="mb-2 text-2xl font-semibold text-zinc-900">Security debug panel</h1>
-        <p className="mb-6 text-sm text-zinc-600">
+        <h1 className="mb-2 text-2xl font-semibold text-[var(--text)]">Security debug panel</h1>
+        <p className="mb-6 text-sm text-[var(--muted)]">
           Org ID: <code className="font-mono text-xs">{session.organizationId}</code>
         </p>
 

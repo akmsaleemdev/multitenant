@@ -38,7 +38,7 @@ export function RentRecommendationForm() {
             name="base_rent_aed"
             type="number"
             defaultValue={12000}
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
+            className="mt-1 w-full rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] px-3 py-2"
           />
         </label>
         <label className="text-sm">
@@ -47,7 +47,7 @@ export function RentRecommendationForm() {
             name="unit_count"
             type="number"
             defaultValue={48}
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
+            className="mt-1 w-full rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] px-3 py-2"
           />
         </label>
         <label className="text-sm">
@@ -56,7 +56,7 @@ export function RentRecommendationForm() {
             name="occupied_units"
             type="number"
             defaultValue={42}
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
+            className="mt-1 w-full rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] px-3 py-2"
           />
         </label>
         <label className="text-sm">
@@ -65,23 +65,23 @@ export function RentRecommendationForm() {
             name="location"
             type="text"
             defaultValue="Dubai Marina"
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2"
+            className="mt-1 w-full rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] px-3 py-2"
           />
         </label>
         <button
           type="submit"
-          className="sm:col-span-2 rounded-md bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-800"
+          className="sm:col-span-2 rounded-md bg-[var(--primary)] px-4 py-2 text-sm text-[var(--text)] hover:opacity-90"
         >
           Get recommendation (heuristic)
         </button>
       </form>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
       {result && (
-        <div className="rounded-md bg-zinc-50 p-4 text-sm">
-          <p className="font-semibold text-zinc-900">
+        <div className="rounded-md bg-[var(--bg)] p-4 text-sm">
+          <p className="font-semibold text-[var(--text)]">
             Recommended: AED {result.recommended_rent_aed.toLocaleString()}
           </p>
-          <p className="mt-1 text-zinc-600">{result.explanation}</p>
+          <p className="mt-1 text-[var(--muted)]">{result.explanation}</p>
         </div>
       )}
     </div>

@@ -3,17 +3,23 @@ import { logger } from './logger';
 
 let pool: Pool | null = null;
 
-function getConnectionString(): string | undefined {
+/** Prefer pooler port 6543 — required for many serverless hosts. */
+export function resolveConnectionString(): string | undefined {
   const raw = process.env.DATABASE_URL?.trim();
-  if (!raw) return undefined;
-  if (raw.includes('[YOUR-PASSWORD]') || raw.includes('YOUR_PASSWORD')) {
+  if (!raw || raw.includes('[YOUR-PASSWORD]') || raw.includes('YOUR_PASSWORD')) {
     return undefined;
   }
+
+  // Upgrade direct :5432 → :6543 (Supavisor on same host; works locally, may help some hosts)
+  if (raw.includes('db.') && raw.includes('.supabase.co:5432')) {
+    return raw.replace('.supabase.co:5432', '.supabase.co:6543');
+  }
+
   return raw;
 }
 
 export function isDatabaseConfigured(): boolean {
-  return Boolean(getConnectionString());
+  return Boolean(resolveConnectionString());
 }
 
 function createPool(connectionString: string): Pool {
@@ -25,14 +31,14 @@ function createPool(connectionString: string): Pool {
     connectionString,
     max: 5,
     idleTimeoutMillis: 10_000,
-    connectionTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 15_000,
     ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
   });
 }
 
 export function getPool(): Pool {
   if (!pool) {
-    const connectionString = getConnectionString();
+    const connectionString = resolveConnectionString();
     if (!connectionString) {
       throw new Error('DATABASE_URL is not configured');
     }
@@ -54,7 +60,6 @@ export async function withOrgContext<T>(
     await client.query(`SELECT set_config('app.current_organization_id', $1, true)`, [
       organizationId,
     ]);
-    logger.debug('RLS org context set', { organizationId });
     const result = await fn(client);
     await client.query('COMMIT');
     return result;

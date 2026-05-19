@@ -25,32 +25,34 @@ export function SecurityPanel({ currentOrgId }: { currentOrgId: string }) {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-[var(--muted)]">
         Demo cross-tenant exploit: while logged into your org, the insecure endpoint accepts{' '}
-        <code className="rounded bg-zinc-100 px-1">?organizationId={otherOrgId}</code> and
-        returns the other tenant&apos;s data.
+        <code className="rounded bg-[var(--bg)] px-1 text-[var(--jazz)]">
+          ?organizationId={otherOrgId}
+        </code>{' '}
+        and returns the other tenant&apos;s data.
       </p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
           onClick={testSecure}
-          className="rounded-md bg-emerald-600 px-4 py-2 text-sm text-white"
+          className="rounded-md bg-emerald-800 px-4 py-2 text-sm text-emerald-100"
         >
           Test secure /api/properties
         </button>
         <button
           type="button"
           onClick={testInsecure}
-          className="rounded-md bg-red-600 px-4 py-2 text-sm text-white"
+          className="rounded-md bg-red-900 px-4 py-2 text-sm text-red-100"
         >
           Test insecure endpoint (exploit)
         </button>
       </div>
       {secureResult && (
-        <pre className="rounded bg-emerald-50 p-3 text-xs text-emerald-900">{secureResult}</pre>
+        <pre className="rounded bg-emerald-950/50 p-3 text-xs text-emerald-200">{secureResult}</pre>
       )}
       {insecureResult && (
-        <pre className="rounded bg-red-50 p-3 text-xs text-red-900">{insecureResult}</pre>
+        <pre className="rounded bg-red-950/50 p-3 text-xs text-red-200">{insecureResult}</pre>
       )}
     </div>
   );

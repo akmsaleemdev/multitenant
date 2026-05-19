@@ -1,21 +1,21 @@
 import type { Invoice } from '@/lib/types';
 
 const statusStyles: Record<string, string> = {
-  paid: 'bg-emerald-50 text-emerald-700',
-  pending: 'bg-amber-50 text-amber-700',
-  overdue: 'bg-red-50 text-red-700',
+  paid: 'bg-emerald-900/40 text-emerald-200',
+  pending: 'bg-amber-900/40 text-amber-200',
+  overdue: 'bg-red-900/40 text-red-200',
 };
 
 export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
   if (invoices.length === 0) {
-    return <p className="text-sm text-zinc-500">No invoices for this organization.</p>;
+    return <p className="text-sm text-[var(--muted)]">No invoices for this organization.</p>;
   }
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-zinc-100 text-zinc-500">
+          <tr className="border-b border-[var(--border)] text-[var(--muted)]">
             <th className="py-2 pr-4 font-medium">Tenant</th>
             <th className="py-2 pr-4 font-medium">Amount (AED)</th>
             <th className="py-2 pr-4 font-medium">Status</th>
@@ -24,11 +24,11 @@ export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
         </thead>
         <tbody>
           {invoices.map((inv) => (
-            <tr key={inv.id} className="border-b border-zinc-50">
-              <td className="py-3 pr-4 font-medium text-zinc-900">
+            <tr key={inv.id} className="border-b border-[var(--border)]/50">
+              <td className="py-3 pr-4 font-medium text-[var(--text)]">
                 {inv.tenant_name ?? inv.tenant_id.slice(0, 8)}
               </td>
-              <td className="py-3 pr-4 text-zinc-600">
+              <td className="py-3 pr-4 text-[var(--muted)]">
                 {Number(inv.amount_aed).toLocaleString()}
               </td>
               <td className="py-3 pr-4">
@@ -38,7 +38,7 @@ export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
                   {inv.status}
                 </span>
               </td>
-              <td className="py-3 text-zinc-600">{inv.due_date ?? '—'}</td>
+              <td className="py-3 text-[var(--muted)]">{inv.due_date ?? '—'}</td>
             </tr>
           ))}
         </tbody>

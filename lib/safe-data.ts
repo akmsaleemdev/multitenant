@@ -1,4 +1,5 @@
-import { tryDb, isDatabaseConfigured } from './db';
+import { tryDb } from './db';
+import { isDatabaseConfigured } from './database';
 import { getPropertiesForOrg } from './queries/properties';
 import { getInvoicesForOrg } from './queries/invoices';
 import type { Property, Invoice } from './types';
@@ -8,42 +9,39 @@ export interface SafeDataResult<T> {
   dbError: string | null;
 }
 
+async function runSafe<T>(label: string, fn: () => Promise<T>, fallback: T): Promise<SafeDataResult<T>> {
+  if (!isDatabaseConfigured()) {
+    return { data: fallback, dbError: null };
+  }
+  try {
+    const data = await fn();
+    return { data, dbError: null };
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    return { data: fallback, dbError: error };
+  }
+}
+
 export async function getDashboardCounts(
   organizationId: string,
 ): Promise<SafeDataResult<{ propertyCount: number; invoiceCount: number }>> {
-  if (!isDatabaseConfigured()) {
-    return { data: { propertyCount: 0, invoiceCount: 0 }, dbError: null };
-  }
-
-  const propsResult = await tryDb(
-    'getPropertiesForOrg',
+  const props = await runSafe(
+    'properties',
     () => getPropertiesForOrg(organizationId),
     [],
   );
-  if (!propsResult.ok) {
+  if (props.dbError) {
+    return { data: { propertyCount: 0, invoiceCount: 0 }, dbError: props.dbError };
+  }
+  const inv = await runSafe('invoices', () => getInvoicesForOrg(organizationId), []);
+  if (inv.dbError) {
     return {
-      data: { propertyCount: 0, invoiceCount: 0 },
-      dbError: propsResult.error,
+      data: { propertyCount: props.data.length, invoiceCount: 0 },
+      dbError: inv.dbError,
     };
   }
-
-  const invResult = await tryDb(
-    'getInvoicesForOrg',
-    () => getInvoicesForOrg(organizationId),
-    [],
-  );
-  if (!invResult.ok) {
-    return {
-      data: { propertyCount: propsResult.data.length, invoiceCount: 0 },
-      dbError: invResult.error,
-    };
-  }
-
   return {
-    data: {
-      propertyCount: propsResult.data.length,
-      invoiceCount: invResult.data.length,
-    },
+    data: { propertyCount: props.data.length, invoiceCount: inv.data.length },
     dbError: null,
   };
 }
@@ -51,29 +49,11 @@ export async function getDashboardCounts(
 export async function getPropertiesSafe(
   organizationId: string,
 ): Promise<SafeDataResult<Property[]>> {
-  if (!isDatabaseConfigured()) {
-    return { data: [], dbError: null };
-  }
-  const result = await tryDb(
-    'getPropertiesForOrg',
-    () => getPropertiesForOrg(organizationId),
-    [],
-  );
-  if (!result.ok) return { data: [], dbError: result.error };
-  return { data: result.data, dbError: null };
+  return runSafe('properties', () => getPropertiesForOrg(organizationId), []);
 }
 
 export async function getInvoicesSafe(
   organizationId: string,
 ): Promise<SafeDataResult<Invoice[]>> {
-  if (!isDatabaseConfigured()) {
-    return { data: [], dbError: null };
-  }
-  const result = await tryDb(
-    'getInvoicesForOrg',
-    () => getInvoicesForOrg(organizationId),
-    [],
-  );
-  if (!result.ok) return { data: [], dbError: result.error };
-  return { data: result.data, dbError: null };
+  return runSafe('invoices', () => getInvoicesForOrg(organizationId), []);
 }

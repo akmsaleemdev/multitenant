@@ -20,7 +20,7 @@ export default async function PropertiesPage() {
       />
       <main className="mx-auto max-w-6xl flex-1 px-4 py-8">
         <DbErrorBanner message={dbError} />
-        <h1 className="mb-6 text-2xl font-semibold text-zinc-900">Properties</h1>
+        <h1 className="mb-6 text-2xl font-semibold text-[var(--text)]">Properties</h1>
         <Card title={`${session.organizationName} — portfolio`}>
           <PropertiesTable properties={properties} />
         </Card>

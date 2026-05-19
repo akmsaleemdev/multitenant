@@ -77,6 +77,31 @@ Then **Redeploy**.
 
 ---
 
+## Demo login accounts
+
+| Organization | Email | Password |
+|----------------|-------|----------|
+| Desert Crown | `admin@desertcrown.ae` | `Desert@2024` |
+| Desert Crown | `manager@desertcrown.ae` | `Manager@2024` |
+| Marina Vista | `admin@marinavista.ae` | `Marina@2024` |
+| Marina Vista | `agent@marinavista.ae` | `Agent@2024` |
+
+---
+
+## Fix Vercel database error (ENOTFOUND db.*.supabase.co)
+
+Vercel cannot use the direct Postgres host reliably. Add on Vercel:
+
+1. `NEXT_PUBLIC_SUPABASE_URL` = `https://blnhbcehrmekhkklkvng.supabase.co`
+2. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` = (your publishable key)
+3. **`SUPABASE_SERVICE_ROLE_KEY`** = from Supabase → **Settings → API** → **service_role** (secret)
+
+The app uses the Supabase HTTPS API on the server when `SUPABASE_SERVICE_ROLE_KEY` is set.
+
+Redeploy after saving env vars.
+
+---
+
 ## Fix Vercel "This page couldn't load" (ERROR 685433807)
 
 Common causes:

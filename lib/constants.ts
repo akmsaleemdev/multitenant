@@ -1,0 +1,13 @@
+/** Demo seed IDs — must match db/seed.sql */
+export const ORG_DESERT_CROWN = '11111111-1111-1111-1111-111111111101';
+export const ORG_MARINA_VISTA = '11111111-1111-1111-1111-111111111102';
+
+export const USER_DESERT_ADMIN = '22222222-2222-2222-2222-222222222201';
+export const USER_MARINA_ADMIN = '22222222-2222-2222-2222-222222222211';
+
+export const DEMO_USERS = [
+  USER_DESERT_ADMIN,
+  USER_MARINA_ADMIN,
+] as const;
+
+export const SESSION_COOKIE = 'demo_user_id';

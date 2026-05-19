@@ -1,5 +1,7 @@
 # UAE Property SaaS — Multi-Tenant Demo
 
+**Repository:** [github.com/akmsaleemdev/multitenant](https://github.com/akmsaleemdev/multitenant)
+
 Production-quality **Next.js App Router** demo for a UAE property management SaaS. Demonstrates **multi-tenant isolation**, **PostgreSQL RLS**, **RBAC-ready schema**, intentional security vulnerability + fix, traceable logging, and a minimal dashboard UI.
 
 ## Project overview

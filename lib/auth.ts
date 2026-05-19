@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import type { DemoUser } from './types';
 import { SESSION_COOKIE, USER_DESERT_ADMIN } from './constants';
-import { query, isDatabaseConfigured } from './db';
+import { query, isDatabaseConfigured, tryDb } from './db';
 import { logger } from './logger';
 
 const DEMO_USER_FALLBACK: DemoUser = {
@@ -19,24 +19,33 @@ async function loadUserById(userId: string): Promise<DemoUser | null> {
     return userId === DEMO_USER_FALLBACK.id ? DEMO_USER_FALLBACK : null;
   }
 
-  const rows = await query<{
-    id: string;
-    organization_id: string;
-    email: string;
-    full_name: string | null;
-    role: DemoUser['role'];
-    organization_name: string;
-    organization_slug: string;
-  }>(
-    `SELECT u.id, u.organization_id, u.email, u.full_name, u.role,
-            o.name AS organization_name, o.slug AS organization_slug
-     FROM users u
-     JOIN organizations o ON o.id = u.organization_id
-     WHERE u.id = $1`,
-    [userId],
+  const result = await tryDb(
+    'loadUserById',
+    async () => {
+      const rows = await query<{
+        id: string;
+        organization_id: string;
+        email: string;
+        full_name: string | null;
+        role: DemoUser['role'];
+        organization_name: string;
+        organization_slug: string;
+      }>(
+        `SELECT u.id, u.organization_id, u.email, u.full_name, u.role,
+                o.name AS organization_name, o.slug AS organization_slug
+         FROM users u
+         JOIN organizations o ON o.id = u.organization_id
+         WHERE u.id = $1`,
+        [userId],
+      );
+      return rows[0] ?? null;
+    },
+    null,
   );
 
-  const row = rows[0];
+  if (!result.ok) return null;
+
+  const row = result.data;
   if (!row) return null;
 
   return {
@@ -50,10 +59,6 @@ async function loadUserById(userId: string): Promise<DemoUser | null> {
   };
 }
 
-/**
- * Resolves the authenticated demo user from cookie or DEMO_USER_ID env.
- * Organization context is ALWAYS derived here — never from client input.
- */
 export async function getSession(): Promise<DemoUser> {
   const cookieStore = await cookies();
   const fromCookie = cookieStore.get(SESSION_COOKIE)?.value;
@@ -69,12 +74,6 @@ export async function getSession(): Promise<DemoUser> {
     logger.warn('Invalid session user, falling back to default', { userId });
     return DEMO_USER_FALLBACK;
   }
-
-  logger.info('Session resolved', {
-    userId: user.id,
-    organizationId: user.organizationId,
-    role: user.role,
-  });
 
   return user;
 }

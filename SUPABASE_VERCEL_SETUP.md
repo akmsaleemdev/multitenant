@@ -77,6 +77,23 @@ Then **Redeploy**.
 
 ---
 
+## Fix Vercel "This page couldn't load" (ERROR 685433807)
+
+Common causes:
+
+1. **`DATABASE_URL` password has `@` or `$`** — breaks the URL parser. **URL-encode** the password:
+   - `$` → `%24`
+   - `@` → `%40`
+   - Example: `MyP@ss$word` → `MyP%40ss%24word`
+
+2. **Missing SSL** — append `?sslmode=require` or use the app's built-in Supabase SSL (already configured in code).
+
+3. **Wrong connection type on Vercel** — use **Transaction pooler** (port **6543**) from Supabase, not always the direct `db.xxx` host.
+
+4. **Update Vercel env** → **Redeploy** after fixing `DATABASE_URL`.
+
+---
+
 ## Security
 
 - **Publishable key** — OK in `NEXT_PUBLIC_*` (browser).

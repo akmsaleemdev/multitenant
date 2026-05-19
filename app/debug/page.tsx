@@ -4,6 +4,8 @@ import { SecurityPanel } from '@/components/SecurityPanel';
 import { UserSwitcher } from '@/components/UserSwitcher';
 import { getSession } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DebugPage() {
   const session = await getSession();
 
